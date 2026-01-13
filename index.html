@@ -23,7 +23,6 @@
             transition: flex 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
             overflow: hidden;
-            /* Fix for mobile flickering */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -85,7 +84,6 @@
         /* --- INFO CONTENT AREA (Bottom 60%) --- */
         .info-container {
             flex: 6; background: white; color: #333; padding: 0; overflow-y: auto;
-            /* Smooth scroll on mobile */
             -webkit-overflow-scrolling: touch; 
         }
         .content-wrapper { padding: 2rem 3rem; max-width: 1200px; margin: 0 auto; }
@@ -173,36 +171,20 @@
         .house.expanded .close-btn { display: flex; }
         .container:not(.has-expanded-item) .house:hover { flex: 3; }
 
-
         /* =========================================
-           MOBILE OPTIMIZATIONS (The Fix)
+           MOBILE OPTIMIZATIONS
            ========================================= */
         @media (max-width: 768px) {
-            /* Adjust fonts so they don't break lines awkwardly */
             .split-title { font-size: 2rem; letter-spacing: 2px; }
             .info-header h2 { font-size: 1.6rem; }
-            
-            /* Remove huge padding to give content space */
             .content-wrapper { padding: 1.5rem; }
-            
-            /* Stack the stats into 2 columns instead of 5 */
             .stats-grid { grid-template-columns: repeat(3, 1fr); }
-            
-            /* Force details to one column */
             .detail-grid { grid-template-columns: 1fr; gap: 1rem; }
             .location-grid { grid-template-columns: 1fr; }
-            
-            /* Adjust slider/content ratio for phone screens */
-            .slider-container { flex: 3; } /* Slider takes 30% height */
-            .info-container { flex: 7; }   /* Text takes 70% height */
-            
-            /* Disable hover effects on mobile to prevent stickiness */
+            .slider-container { flex: 3; } 
+            .info-container { flex: 7; }   
             .container:not(.has-expanded-item) .house:hover { flex: 1; }
-            
-            /* Make Calendar easier to swipe */
-            .month { min-width: 85vw; } /* Month takes almost full screen width */
-            
-            /* Adjust Map Height */
+            .month { min-width: 85vw; }
             .map-container { height: 250px; }
         }
     </style>
@@ -324,7 +306,7 @@
 
                         <h3>Location & Surroundings</h3>
                         <div class="map-container">
-                            <iframe src="https://maps.google.com/maps?q=45.00139943074485,13.881352061633683&z=14&output=embed" allowfullscreen></iframe>
+                            <iframe src="http://googleusercontent.com/maps.google.com/maps?q=45.00139943074485,13.881352061633683&z=15&output=embed" allowfullscreen></iframe>
                         </div>
 
                         <div class="location-grid">
@@ -422,9 +404,11 @@
     </div>
 
     <script>
-        // --- 1. SLIDESHOW LOGIC ---
+        // --- 1. SLIDESHOW LOGIC (Button Click) ---
         function changeSlide(event, n, sliderId) {
-            event.stopPropagation();
+            // If triggered by swipe (no click event), we don't need stopPropagation
+            if (event) event.stopPropagation();
+            
             let slider = document.getElementById(sliderId);
             let slides = slider.getElementsByClassName("slide");
             let currentIndex = -1;
@@ -438,7 +422,40 @@
             slides[newIndex].classList.add("active");
         }
 
-        // --- 2. EXPAND LOGIC ---
+        // --- 2. TOUCH SWIPE LOGIC (NEW!) ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function addSwipeSupport(sliderId) {
+            const slider = document.getElementById(sliderId);
+            
+            slider.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            slider.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe(sliderId);
+            }, {passive: true});
+        }
+
+        function handleSwipe(sliderId) {
+            // Threshold: finger must move at least 50px to count as swipe
+            if (touchEndX < touchStartX - 50) {
+                // Swiped Left -> Next Slide
+                changeSlide(null, 1, sliderId);
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swiped Right -> Previous Slide
+                changeSlide(null, -1, sliderId);
+            }
+        }
+
+        // Initialize swipe for both sliders
+        addSwipeSupport('slider1');
+        addSwipeSupport('slider2');
+
+        // --- 3. EXPAND LOGIC ---
         function expandHouse(selectedId, otherId) {
             var container = document.getElementById('main-container');
             if (container.classList.contains('has-expanded-item')) return;
@@ -458,7 +475,7 @@
             videos.forEach(v => v.pause());
         }
 
-        // --- 3. FULL YEAR CALENDAR GENERATOR ---
+        // --- 4. CALENDAR GENERATOR ---
         const bookedDates = [];
         
         function addRange(year, month, startDay, endDay) {
