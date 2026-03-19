@@ -1,535 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holiday Escapes | Paradise Villa Istria</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        /* --- RESET --- */
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Montserrat', sans-serif; background: #000; }
-        * { box-sizing: border-box; }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Luce d'Istria – Choose Your Villa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --gold: #c9a96e; --gold-light: #e8d5b0; }
+    html, body { height: 100%; font-family: 'Jost', sans-serif; overflow: hidden; }
 
-        /* --- LAYOUT --- */
-        .container { display: flex; flex-direction: column; height: 100vh; width: 100%; }
+    .split { display: flex; height: 100vh; width: 100vw; position: relative; }
+    .panel { flex: 1; position: relative; overflow: hidden; transition: flex 0.85s cubic-bezier(0.77,0,0.175,1); cursor: pointer; }
+    .panel:hover { flex: 1.48; }
+    .panel:hover .panel-overlay { opacity: 1; }
+    .panel:hover .panel-cta { opacity: 1; transform: translateY(0); }
+    .panel:hover .panel-bg { transform: scale(1.07); }
+    .panel:hover .panel-stats { opacity: 1; transform: translateY(0); }
+    .panel:hover .panel-title { letter-spacing: 0.02em; }
 
-        /* --- HOUSE SPLIT VIEW --- */
-        .house {
-            position: relative;
-            flex: 1; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: flex 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
-            overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+    .panel-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.85s cubic-bezier(0.77,0,0.175,1); }
+    .panel-left .panel-bg {
+      background-image: linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.78) 100%),
+        url('images/p1.jpeg');
+    }
+    .panel-right .panel-bg {
+      background-image: linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.78) 100%),
+        url('images/c1.jpeg');
+    }
+    .panel-overlay { position: absolute; inset: 0; background: rgba(140,100,40,0.1); opacity: 0; transition: opacity 0.6s; }
 
-        /* --- BACKGROUNDS --- */
-        .house::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-size: cover; background-position: center;
-            transition: opacity 0.5s; z-index: 0;
-        }
-        
-        .paradis::before {
-            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('images/p1.jpeg');
-        }
-        .casanova::before {
-            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('images/c1.jpeg');
-        }
+    /* Animated content area */
+    .panel-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 56px 52px; }
+    .panel-eyebrow { font-size: 0.67rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; opacity: 0; transform: translateY(18px); transition: opacity 0.6s 0.05s, transform 0.6s 0.05s; }
+    .panel:hover .panel-eyebrow { opacity: 1; transform: none; }
+    .panel-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3.4rem); font-weight: 300; color: #fff; line-height: 1.12; margin-bottom: 8px; transition: letter-spacing 0.6s; }
+    .panel-title em { font-style: italic; color: var(--gold-light); }
+    .panel-sub { font-size: 0.84rem; color: rgba(255,255,255,0.62); font-weight: 300; margin-bottom: 26px; line-height: 1.55; max-width: 340px; opacity: 0; transform: translateY(14px); transition: opacity 0.6s 0.08s, transform 0.6s 0.08s; }
+    .panel:hover .panel-sub { opacity: 1; transform: none; }
 
-        .split-title {
-            color: white; font-size: 4rem; text-transform: uppercase; letter-spacing: 4px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 1; transition: opacity 0.3s; pointer-events: none;
-            text-align: center; padding: 0 20px;
-        }
+    .panel-stats { display: flex; gap: 12px; margin-bottom: 30px; opacity: 0; transform: translateY(16px); transition: opacity 0.55s 0.13s, transform 0.55s 0.13s; flex-wrap: wrap; }
+    .stat { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(201,169,110,0.3); padding: 11px 16px; min-width: 64px; }
+    .stat-n { font-family: 'Cormorant Garamond', serif; font-size: 1.45rem; font-weight: 400; color: var(--gold); line-height: 1; }
+    .stat-l { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.58); margin-top: 4px; }
 
-        /* --- EXPANSION LOGIC --- */
-        .house.expanded { flex: 100; cursor: default; }
-        .house.shrunk { flex: 0; }
-        .house.expanded .split-title { opacity: 0; }
-        .house.expanded::before { opacity: 0; }
+    .panel-cta { display: inline-flex; align-items: center; gap: 12px; padding: 14px 30px; background: var(--gold); color: #1a1a1a; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500; text-decoration: none; opacity: 0; transform: translateY(14px); transition: opacity 0.5s 0.18s, transform 0.5s 0.18s, background 0.3s; align-self: flex-start; }
+    .panel-cta:hover { background: #b8935a; color: #fff; }
+    .panel-cta svg { width: 14px; height: 14px; transition: transform 0.3s; }
+    .panel-cta:hover svg { transform: translateX(4px); }
 
-        /* --- THE FULL VIEW --- */
-        .full-view {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; flex-direction: column;
-        }
-        .house.expanded .full-view {
-            display: flex; animation: fadeIn 0.8s forwards 0.3s; opacity: 0;
-        }
-        @keyframes fadeIn { to { opacity: 1; } }
+    .panel-number { position: absolute; top: 40px; font-family: 'Cormorant Garamond', serif; font-size: 7rem; font-weight: 300; line-height: 1; color: rgba(255,255,255,0.06); pointer-events: none; user-select: none; transition: opacity 0.6s; }
+    .panel-left .panel-number { right: 40px; }
+    .panel-right .panel-number { left: 40px; }
+    .panel:hover .panel-number { opacity: 0.12; }
 
-        /* --- SLIDER STYLES --- */
-        .slider-container {
-            flex: 4; width: 100%; position: relative; background: #222; overflow: hidden;
-        }
-        .slide {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 0.5s ease-in-out; object-fit: cover;
-        }
-        .slide.active { opacity: 1; }
+    /* Vertical divider + center badge */
+    .center-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+    .divider-line { width: 1px; height: 80px; background: linear-gradient(to bottom, transparent, rgba(201,169,110,0.7), transparent); }
+    .badge { background: #1a1a1a; border: 1px solid rgba(201,169,110,0.5); padding: 18px 24px; text-align: center; }
+    .badge-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 300; letter-spacing: 0.14em; color: #fff; white-space: nowrap; }
+    .badge-logo span { color: var(--gold); }
+    .badge-sub { font-size: 0.57rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 5px; }
 
-        .prev, .next {
-            cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px;
-            margin-top: -22px; color: white; font-weight: bold; font-size: 18px;
-            transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none;
-            background-color: rgba(0,0,0,0.3); z-index: 20;
-        }
-        .next { right: 0; border-radius: 3px 0 0 3px; }
-        .prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+    /* Animated hint arrows at bottom */
+    .panel-hint { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .hint-line { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent); animation: hintPulse 2.4s ease-in-out infinite; }
+    .hint-line:nth-child(2) { animation-delay: 0.3s; }
+    @keyframes hintPulse { 0%,100% { opacity: 0.6; } 50% { opacity: 0.15; } }
 
-        /* --- INFO CONTENT AREA (Bottom 60%) --- */
-        .info-container {
-            flex: 6; background: white; color: #333; padding: 0; overflow-y: auto;
-            -webkit-overflow-scrolling: touch; 
-        }
-        .content-wrapper { padding: 2rem 3rem; max-width: 1200px; margin: 0 auto; }
+    /* Intro animation on page load */
+    .panel-title { animation: titleIn 1.1s cubic-bezier(0.22,1,0.36,1) both; }
+    .panel-left .panel-title { animation-delay: 0.2s; }
+    .panel-right .panel-title { animation-delay: 0.4s; }
+    @keyframes titleIn { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: none; } }
 
-        .info-header { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem; }
-        .info-header h2 { margin: 0; font-size: 2.2rem; color: #2c3e50; line-height: 1.2; }
-        .location-sub { color: #7f8c8d; font-size: 1rem; display: flex; align-items: center; gap: 5px; margin-top: 5px; }
-
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-bottom: 2rem; text-align: center; }
-        .stat-box { background: #f9f9f9; padding: 1rem; border-radius: 8px; }
-        .stat-icon { font-size: 1.5rem; display: block; margin-bottom: 5px; }
-        .stat-label { font-size: 0.8rem; color: #666; text-transform: uppercase; font-weight: bold; }
-
-        /* Sections */
-        h3 { color: #2c3e50; border-left: 4px solid #e67e22; padding-left: 10px; margin-top: 3rem; margin-bottom: 1.5rem; }
-        h4 { margin-bottom: 0.5rem; color: #555; }
-
-        /* Lists */
-        .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
-        .amenity-list { list-style: none; padding: 0; }
-        .amenity-list li { margin-bottom: 8px; font-size: 0.95rem; color: #555; padding-left: 20px; position: relative; }
-        .amenity-list li::before { content: '•'; color: #e67e22; font-weight: bold; position: absolute; left: 0; }
-
-        /* --- LOCATION LAYOUT --- */
-        .location-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .loc-category h4 {
-            font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; color: #2c3e50; display: flex; align-items: center; gap: 8px;
-        }
-        .dist-list { list-style: none; padding: 0; }
-        .dist-list li {
-            display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; color: #555;
-            border-bottom: 1px dotted #eee; padding-bottom: 4px;
-        }
-        .dist-list li strong { color: #2c3e50; }
-
-        /* Map Embed */
-        .map-container {
-            width: 100%; height: 350px; border-radius: 8px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        iframe { border: 0; width: 100%; height: 100%; }
-
-        /* Policy Box */
-        .policy-box { background: #fff8e1; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #ffe0b2; }
-        .policy-item { margin-bottom: 12px; display: flex; gap: 10px; font-size: 0.95rem; }
-        .policy-icon { min-width: 25px; }
-
-        /* --- VIDEO PLAYER --- */
-        .video-wrapper {
-            width: 100%; margin-bottom: 2rem; border-radius: 8px; overflow: hidden; background: black;
-        }
-        video { width: 100%; display: block; max-height: 500px; }
-
-        /* --- CALENDAR STYLES --- */
-        .calendar-section { position: relative; margin-top: 2rem; }
-        .calendar-scroll-area {
-            display: flex; overflow-x: auto; gap: 20px; padding-bottom: 20px; scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-        .calendar-scroll-area::-webkit-scrollbar { height: 8px; }
-        .calendar-scroll-area::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .calendar-scroll-area::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
-        
-        .month { min-width: 300px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; }
-        .month-header { background: #2c3e50; color: white; text-align: center; padding: 10px; font-weight: bold; }
-        .days { display: grid; grid-template-columns: repeat(7, 1fr); padding: 10px; text-align: center; }
-        .day-label { font-weight: bold; font-size: 0.8rem; color: #7f8c8d; padding-bottom: 5px; }
-        .date { padding: 8px; font-size: 0.9rem; border-radius: 4px; margin: 1px; }
-        .date.available { color: #333; }
-        .date.booked { background-color: #e74c3c; color: white; text-decoration: line-through; opacity: 0.6; }
-        .date.empty { background: transparent; }
-
-        /* --- CLOSE BUTTON --- */
-        .close-btn {
-            position: absolute; top: 30px; right: 30px; z-index: 100;
-            background: rgba(0,0,0,0.5); color: white; border: none; width: 50px; height: 50px;
-            border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: none;
-            align-items: center; justify-content: center;
-        }
-        .house.expanded .close-btn { display: flex; }
-        .container:not(.has-expanded-item) .house:hover { flex: 3; }
-
-        /* =========================================
-           MOBILE OPTIMIZATIONS
-           ========================================= */
-        @media (max-width: 768px) {
-            .split-title { font-size: 2rem; letter-spacing: 2px; }
-            .info-header h2 { font-size: 1.6rem; }
-            .content-wrapper { padding: 1.5rem; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); }
-            .detail-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .location-grid { grid-template-columns: 1fr; }
-            .slider-container { flex: 3; } 
-            .info-container { flex: 7; }   
-            .container:not(.has-expanded-item) .house:hover { flex: 1; }
-            .month { min-width: 85vw; }
-            .map-container { height: 250px; }
-        }
-    </style>
+    @media (max-width: 700px) {
+      html, body { overflow: auto; }
+      .split { flex-direction: column; height: auto; }
+      .panel { flex: none !important; height: 100vh; }
+      .center-badge { display: none; }
+      .panel-stats, .panel-eyebrow, .panel-sub, .panel-cta { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
 </head>
 <body>
+<div class="split">
 
-    <div class="container" id="main-container">
-        
-        <div class="house paradis" id="house1" onclick="expandHouse('house1', 'house2')">
-            <h1 class="split-title">Paradise Villa Istria</h1>
-            <button class="close-btn" onclick="resetView(event)">✕</button>
-
-            <div class="full-view">
-                <div class="slider-container" id="slider1">
-                    <a class="prev" onclick="changeSlide(event, -1, 'slider1')">❮</a>
-                    <a class="next" onclick="changeSlide(event, 1, 'slider1')">❯</a>
-                    <img src="images/p1.jpeg" class="slide active">
-                    <img src="images/p2.jpeg" class="slide">
-                    <img src="images/p3.jpeg" class="slide">
-                    <img src="images/p4.jpeg" class="slide">
-                    <img src="images/p5.jpeg" class="slide">
-                    <img src="images/p6.jpeg" class="slide">
-                    <img src="images/p7.jpeg" class="slide">
-                </div>
-
-                <div class="info-container">
-                    <div class="content-wrapper">
-                        
-                        <div class="info-header">
-                            <h2>Paradise Villa Istria</h2>
-                            <div class="location-sub">📍 Svetvinčenat, Istra Jug, Croatia</div>
-                        </div>
-
-                        <div class="stats-grid">
-                            <div class="stat-box"><span class="stat-icon">👥</span><span class="stat-label">9 Guests</span></div>
-                            <div class="stat-box"><span class="stat-icon">🛏️</span><span class="stat-label">4 Bed</span></div>
-                            <div class="stat-box"><span class="stat-icon">🚿</span><span class="stat-label">2 Bath</span></div>
-                            <div class="stat-box"><span class="stat-icon">📏</span><span class="stat-label">142 m²</span></div>
-                            <div class="stat-box"><span class="stat-icon">🏊</span><span class="stat-label">32 m² Pool</span></div>
-                        </div>
-
-                        <p>Paradise Villa Istria is a comfortable family home located in the Paradise Villas resort near Vodnjan. Located only 15 kilometers from Pula, this is a smart location for a quiet vacation. The property is air-conditioned (4 units) on both floors.</p>
-
-                        <h3>Sleeping & Bathing</h3>
-                        <div class="detail-grid">
-                            <div>
-                                <h4>🛏️ Bedrooms (Sleeps 9)</h4>
-                                <ul class="amenity-list">
-                                    <li><strong>Bedroom 1:</strong> Ground floor, 1 Queen size Double Bed.</li>
-                                    <li><strong>Bedroom 2:</strong> 1st floor, 1 Queen size Double Bed.</li>
-                                    <li><strong>Bedroom 3:</strong> 1st floor, 1 Queen size Double Bed.</li>
-                                    <li><strong>Bedroom 4:</strong> 1st floor, 1 Queen size Double Bed.</li>
-                                    <li><em>Baby cot available upon request.</em></li>
-                                    <li>2 Bedrooms share a balcony with resort park view.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4>🚿 Bathrooms</h4>
-                                <ul class="amenity-list">
-                                    <li><strong>Bathroom 1:</strong> Shower, toilet, sink.</li>
-                                    <li><strong>Bathroom 2:</strong> Shower, toilet, sink, washing machine.</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3>Kitchen & Amenities</h3>
-                        <div class="detail-grid">
-                            <div>
-                                <h4>🍳 Kitchen & Dining</h4>
-                                <ul class="amenity-list">
-                                    <li>Espresso Coffee Machine & Filter Machine</li>
-                                    <li>Dishwasher & Microwave</li>
-                                    <li>Oven & Refrigerator</li>
-                                    <li>Toaster & Water Kettle</li>
-                                    <li>Full set of Dishes, Utensils & Wine glasses</li>
-                                    <li>Dining Area</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4>📺 Entertainment & Leisure</h4>
-                                <ul class="amenity-list">
-                                    <li>Satellite/Cable TV</li>
-                                    <li>Flat Screen TV, DVD Player, Stereo</li>
-                                    <li>Private Heated Pool (32 m²)</li>
-                                    <li>Shared Tennis Court & Half-Basketball Court</li>
-                                    <li>Children's Playground in central park</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3>Outside</h3>
-                        <div class="detail-grid">
-                            <div>
-                                <ul class="amenity-list">
-                                    <li>Balcony & Terrace</li>
-                                    <li>Private Garden (Total plot 750 m²)</li>
-                                    <li>Barbecue</li>
-                                    <li>Parking (2 spots)</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4>⚠️ Suitability</h4>
-                                <ul class="amenity-list">
-                                    <li>Children Welcome</li>
-                                    <li>Pets Allowed (Max 2 dogs)</li>
-                                    <li>Long-term renters welcome</li>
-                                    <li><strong>Wheelchair Inaccessible</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3>Video Tour</h3>
-                        <div class="video-wrapper">
-                            <video controls poster="images/p1.jpeg">
-                                <source src="images/paradis.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-
-                        <h3>Location & Surroundings</h3>
-                        <div class="map-container">
-                            <iframe src="http://googleusercontent.com/maps.google.com/maps?q=45.00139943074485,13.881352061633683&z=15&output=embed" allowfullscreen></iframe>
-                        </div>
-
-                        <div class="location-grid">
-                            <div class="loc-category">
-                                <h4>📍 What's nearby?</h4>
-                                <ul class="dist-list">
-                                    <li><span>Fažana</span> <strong>12 km</strong></li>
-                                    <li><span>Pula</span> <strong>17.4 km</strong></li>
-                                    <li><span>Rovinj</span> <strong>29 km</strong></li>
-                                </ul>
-                            </div>
-                            <div class="loc-category">
-                                <h4>🍴 Where to eat & drink?</h4>
-                                <ul class="dist-list">
-                                    <li><span>Rest. Konoba Klarići</span> <strong>3 km</strong></li>
-                                    <li><span>Pizza & BBQ Buffalo</span> <strong>5.4 km</strong></li>
-                                    <li><span>Trattoria Pizzeria Navetta</span> <strong>14 km</strong></li>
-                                </ul>
-                            </div>
-                            <div class="loc-category">
-                                <h4>🏖️ Nearby beaches</h4>
-                                <ul class="dist-list">
-                                    <li><span>Peroj Beach</span> <strong>12.5 km</strong></li>
-                                    <li><span>Fažana Beach</span> <strong>13.4 km</strong></li>
-                                    <li><span>Hidrobaza Beach</span> <strong>16 km</strong></li>
-                                </ul>
-                            </div>
-                            <div class="loc-category">
-                                <h4>✈️ Airports & Highway</h4>
-                                <ul class="dist-list">
-                                    <li><span>Highway E751</span> <strong>9 km</strong></li>
-                                    <li><span>Pula Airport (PUY)</span> <strong>19 km</strong></li>
-                                </ul>
-                            </div>
-                            <div class="loc-category">
-                                <h4>🏛️ Top attractions</h4>
-                                <ul class="dist-list">
-                                    <li><span>Kažun Park</span> <strong>6.5 km</strong></li>
-                                    <li><span>Boat to Brijuni</span> <strong>12 km</strong></li>
-                                    <li><span>National Park Brijuni</span> <strong>14.8 km</strong></li>
-                                    <li><span>Cape Kamenjak</span> <strong>31.9 km</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3>Property Policies</h3>
-                        <div class="policy-box">
-                            <div class="policy-item"><span class="policy-icon">🕒</span> <strong>Check-in:</strong> From 16:00 h</div>
-                            <div class="policy-item"><span class="policy-icon">🕙</span> <strong>Check-out:</strong> Until 10:00 h</div>
-                            <div class="policy-item"><span class="policy-icon">💰</span> <strong>Security Deposit:</strong> 500 EUR (Cash at Check-In).</div>
-                            <div class="policy-item"><span class="policy-icon">🐶</span> <strong>Pets:</strong> 2 dogs max. 10 EUR / night per dog.</div>
-                            <div class="policy-item"><span class="policy-icon">🌡️</span> <strong>Pool Heating:</strong> Optional. 25 EUR/night.</div>
-                            <div class="policy-item"><span class="policy-icon">💳</span> <strong>Payment:</strong> 25% prepayment, 75% 35 days before arrival.</div>
-                            <div class="policy-item"><span class="policy-icon">❌</span> <strong>Cancellation:</strong> Free until 121 days before (minus fee).</div>
-                        </div>
-
-                        <h3>Availability Calendar (2026)</h3>
-                        <p style="font-size:0.9rem; color:#666;">Scroll sideways to view all 12 months. Red dates are booked.</p>
-                        <div class="calendar-section">
-                            <div class="calendar-scroll-area" id="calendar-wrapper-1">
-                                </div>
-                        </div>
-
-                        <button class="book-btn" style="width:100%; padding:15px; background:#e67e22; color:white; border:none; font-size:1.2rem; font-weight:bold; cursor:pointer; margin-top:20px; margin-bottom: 50px;">Request Booking</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="house casanova" id="house2" onclick="expandHouse('house2', 'house1')">
-            <h1 class="split-title">Villa Casa Nova</h1>
-            <button class="close-btn" onclick="resetView(event)">✕</button>
-
-            <div class="full-view">
-                <div class="slider-container" id="slider2">
-                    <a class="prev" onclick="changeSlide(event, -1, 'slider2')">❮</a>
-                    <a class="next" onclick="changeSlide(event, 1, 'slider2')">❯</a>
-                    <img src="images/c1.jpeg" class="slide active">
-                    <img src="images/c2.jpeg" class="slide">
-                    <img src="images/c3.jpeg" class="slide">
-                    <img src="images/c4.jpeg" class="slide">
-                    <img src="images/c5.jpeg" class="slide">
-                    <img src="images/c6.jpeg" class="slide">
-                    <img src="images/c7.jpeg" class="slide">
-                </div>
-                <div class="info-container">
-                    <div class="content-wrapper">
-                        <h2>Villa Casa Nova</h2>
-                        <p>Details for the second house go here...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+  <a class="panel panel-left" href="paradise-villa.html">
+    <div class="panel-bg"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel-number">01</div>
+    <div class="panel-hint"><div class="hint-line"></div><div class="hint-line"></div></div>
+    <div class="panel-content">
+      <p class="panel-eyebrow">Svetvinčenat · South Istria</p>
+      <h2 class="panel-title">Paradise<br><em>Villa Istria</em></h2>
+      <p class="panel-sub">The grand family retreat — 4 bedrooms, heated pool &amp; 750 m² private garden</p>
+      <div class="panel-stats">
+        <div class="stat"><span class="stat-n">9</span><span class="stat-l">Guests</span></div>
+        <div class="stat"><span class="stat-n">4</span><span class="stat-l">Bedrooms</span></div>
+        <div class="stat"><span class="stat-n">142</span><span class="stat-l">m²</span></div>
+        <div class="stat"><span class="stat-n">32m²</span><span class="stat-l">Pool</span></div>
+      </div>
+      <span class="panel-cta">Explore Villa
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </span>
     </div>
+  </a>
 
-    <script>
-        // --- 1. SLIDESHOW LOGIC (Button Click) ---
-        function changeSlide(event, n, sliderId) {
-            // If triggered by swipe (no click event), we don't need stopPropagation
-            if (event) event.stopPropagation();
-            
-            let slider = document.getElementById(sliderId);
-            let slides = slider.getElementsByClassName("slide");
-            let currentIndex = -1;
-            for (let i = 0; i < slides.length; i++) {
-                if (slides[i].classList.contains("active")) { currentIndex = i; break; }
-            }
-            let newIndex = currentIndex + n;
-            if (newIndex >= slides.length) { newIndex = 0; }
-            if (newIndex < 0) { newIndex = slides.length - 1; }
-            slides[currentIndex].classList.remove("active");
-            slides[newIndex].classList.add("active");
-        }
+  <div class="center-badge">
+    <div class="divider-line"></div>
+    <div class="badge">
+      <div class="badge-logo">LUCE <span>D'ISTRIA</span></div>
+      <div class="badge-sub">Choose your villa</div>
+    </div>
+    <div class="divider-line"></div>
+  </div>
 
-        // --- 2. TOUCH SWIPE LOGIC (NEW!) ---
-        let touchStartX = 0;
-        let touchEndX = 0;
+  <a class="panel panel-right" href="villa-casa-nova.html">
+    <div class="panel-bg"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel-number">02</div>
+    <div class="panel-hint"><div class="hint-line"></div><div class="hint-line"></div></div>
+    <div class="panel-content">
+      <p class="panel-eyebrow">Bale · Central Istria</p>
+      <h2 class="panel-title">Villa<br><em>Casa Nova</em></h2>
+      <p class="panel-sub">The ultimate luxury escape — 7 en-suite rooms, spa, game room &amp; mini-cinema</p>
+      <div class="panel-stats">
+        <div class="stat"><span class="stat-n">15</span><span class="stat-l">Guests</span></div>
+        <div class="stat"><span class="stat-n">7</span><span class="stat-l">Bedrooms</span></div>
+        <div class="stat"><span class="stat-n">250</span><span class="stat-l">m²</span></div>
+        <div class="stat"><span class="stat-n">30m²</span><span class="stat-l">Pool</span></div>
+      </div>
+      <span class="panel-cta">Explore Villa
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
 
-        function addSwipeSupport(sliderId) {
-            const slider = document.getElementById(sliderId);
-            
-            slider.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-            }, {passive: true});
-
-            slider.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe(sliderId);
-            }, {passive: true});
-        }
-
-        function handleSwipe(sliderId) {
-            // Threshold: finger must move at least 50px to count as swipe
-            if (touchEndX < touchStartX - 50) {
-                // Swiped Left -> Next Slide
-                changeSlide(null, 1, sliderId);
-            }
-            if (touchEndX > touchStartX + 50) {
-                // Swiped Right -> Previous Slide
-                changeSlide(null, -1, sliderId);
-            }
-        }
-
-        // Initialize swipe for both sliders
-        addSwipeSupport('slider1');
-        addSwipeSupport('slider2');
-
-        // --- 3. EXPAND LOGIC ---
-        function expandHouse(selectedId, otherId) {
-            var container = document.getElementById('main-container');
-            if (container.classList.contains('has-expanded-item')) return;
-            container.classList.add('has-expanded-item');
-            document.getElementById(selectedId).classList.add('expanded');
-            document.getElementById(otherId).classList.add('shrunk');
-        }
-
-        function resetView(event) {
-            event.stopPropagation();
-            var container = document.getElementById('main-container');
-            var houses = document.querySelectorAll('.house');
-            container.classList.remove('has-expanded-item');
-            houses.forEach(h => h.classList.remove('expanded', 'shrunk'));
-            
-            var videos = document.querySelectorAll('video');
-            videos.forEach(v => v.pause());
-        }
-
-        // --- 4. CALENDAR GENERATOR ---
-        const bookedDates = [];
-        
-        function addRange(year, month, startDay, endDay) {
-            for(let i = startDay; i <= endDay; i++) {
-                let m = month.toString().padStart(2,'0');
-                let d = i.toString().padStart(2,'0');
-                bookedDates.push(`${year}-${m}-${d}`);
-            }
-        }
-        
-        addRange(2026, 1, 13, 31); 
-        addRange(2026, 2, 1, 28);  
-        addRange(2026, 3, 1, 31);  
-
-        function generateCalendar(elementId, year, month) {
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const firstDayIndex = new Date(year, month, 1).getDay(); 
-            
-            let startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-
-            let html = `<div class="month"><div class="month-header">${monthNames[month]} ${year}</div><div class="days">`;
-            
-            const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-            dayLabels.forEach(d => html += `<div class="day-label">${d}</div>`);
-
-            for (let i = 0; i < startDay; i++) {
-                html += `<div class="date empty"></div>`;
-            }
-
-            for (let i = 1; i <= daysInMonth; i++) {
-                let currentMonth = (month + 1).toString().padStart(2, '0');
-                let currentDay = i.toString().padStart(2, '0');
-                let dateString = `${year}-${currentMonth}-${currentDay}`;
-
-                let statusClass = "available";
-                if (bookedDates.includes(dateString)) {
-                    statusClass = "booked";
-                }
-
-                html += `<div class="date ${statusClass}">${i}</div>`;
-            }
-
-            html += `</div></div>`;
-            return html;
-        }
-
-        const calContainer = document.getElementById("calendar-wrapper-1");
-        let calendarHTML = "";
-        for(let i=0; i<12; i++) {
-            calendarHTML += generateCalendar("cal", 2026, i);
-        }
-        calContainer.innerHTML = calendarHTML;
-
-    </script>
+</div>
 </body>
 </html>
