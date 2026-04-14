@@ -91,7 +91,9 @@
     .cal-month-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;color:#fff;text-align:center;margin-bottom:14px;letter-spacing:.06em}
     .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
     .cal-dn{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:center;padding:8px 0 10px}
-    .cal-d{text-align:center;font-size:.84rem;min-height:34px;display:flex;align-items:center;justify-content:center;border-radius:2px;color:rgba(255,255,255,.75);position:relative;transition:background .15s}
+    .cal-d{text-align:center;font-size:.84rem;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;border-radius:2px;color:rgba(255,255,255,.75);position:relative;transition:background .15s}
+    .cal-price{font-size:.52rem;color:var(--gold);opacity:.9;letter-spacing:.01em;line-height:1;pointer-events:none;}
+    .cal-d.sel-start .cal-price,.cal-d.sel-end .cal-price{color:#1a1a1a;}
     .cal-d.past{color:rgba(255,255,255,.18);cursor:default}
     .cal-d.booked{background:rgba(200,55,55,.22);color:rgba(255,110,110,.6);cursor:not-allowed}
     .cal-d.booked::after{content:'';position:absolute;left:8px;right:8px;top:50%;height:1px;background:rgba(255,80,80,.4)}
@@ -177,7 +179,7 @@
       .hero-eyebrow{font-size:.62rem}
       nav,nav.scrolled{padding:14px 16px}
       section{padding:48px 16px}
-      .cal-d{font-size:.76rem;min-height:30px}
+      .cal-d{font-size:.76rem;min-height:44px}
       .cal-dn{font-size:.55rem;padding:6px 0 8px}
     }
   </style>
@@ -204,7 +206,7 @@
 <nav id="mainNav">
   <a href="index.html" class="nav-back"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> All Villas</a>
   <a href="index.html" class="nav-logo">LUCE <span>D'ISTRIA</span></a>
-  <ul class="nav-links"><li><a href="#about">About</a></li><li><a href="#wellness">Wellness</a></li><li><a href="#amenities">Amenities</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#location">Location</a></li><li><a href="#book" style="color:var(--gold)">Book Now</a></li></ul>
+  <ul class="nav-links"><li><a href="#about">About</a></li><li><a href="#wellness">Wellness</a></li><li><a href="#amenities">Amenities</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#video">Video</a></li><li><a href="#location">Location</a></li><li><a href="#book" style="color:var(--gold)">Book Now</a></li></ul>
 </nav>
 <section class="hero">
   <div class="hero-bg"></div>
@@ -234,8 +236,8 @@
       <div class="amenity-card reveal" data-delay="5"><div class="amenity-icon">🎮</div><h3>Entertainment</h3><ul><li>Game room with mini-cinema</li><li>PlayStation 5</li><li>Flat screen TV &amp; Wi-Fi throughout</li></ul></div>
       <div class="amenity-card reveal" data-delay="6"><div class="amenity-icon">❄️</div><h3>Comfort</h3><ul><li>Air conditioning throughout</li><li>Children welcome</li><li>1 small pet on inquiry (20 EUR/night)</li></ul></div></div></div></section>
 <section class="gallery" id="gallery"><div class="gallery-inner"><div class="gallery-header reveal"><p class="section-eyebrow">The Property</p><h2 class="section-title">See it for <em>yourself</em></h2><div class="divider"></div></div><div class="gallery-grid" id="galleryGrid"></div><div class="gallery-cta"><button class="btn-gal" onclick="openGallery()">View all <span id="photoCount"></span> photos &#8599;</button></div></div></section>
-
-<section class="location" id="location"><div class="location-grid"><div class="reveal-left"><p class="section-eyebrow">Location</p><h2 class="section-title">Bale,<br><em>Central Istria</em></h2><div class="divider" style="background:var(--gold)"></div><p>Bale is one of Istria's best-kept secrets — a medieval hilltop town minutes from the villa, with Rovinj just 12 km away.</p><div class="loc-cols"><div class="loc-group"><h4>Town &amp; Nearby</h4><ul><li>Soardo-Bembo Castle<span>3 min walk</span></li><li>Rovinj<span>12 km</span></li><li>Beach Bale<span>6 km</span></li><li>Dvigrad Castle<span>16 km</span></li></ul></div><div class="loc-group"><h4>Travel</h4><ul><li>Pula Airport<span>~26 min</span></li><li>Konoba Cakula<span>450 m</span></li></ul></div></div></div><div class="location-img reveal-right"><img src="images/c4.jpeg" alt="Villa Casa Nova"/></div></div></section>
+<section class="video-section" id="video"><div class="video-inner"><div class="video-header reveal"><p class="section-eyebrow">Video Tour</p><h2 class="section-title" style="color:#fff">Experience the villa <em>in motion</em></h2><div class="divider" style="margin:22px auto;"></div></div><div class="reveal"><div class="video-border"><video controls poster="images/c1.jpeg"><source src="casanova.mp4" type="video/mp4"/></video></div></div></div></section>
+<section class="location" id="location"><div class="location-grid"><div class="reveal-left"><p class="section-eyebrow">Location</p><h2 class="section-title">Bale,<br><em>Central Istria</em></h2><div class="divider" style="background:var(--gold)"></div><p>Bale is one of Istria's best-kept secrets — a medieval hilltop town minutes from the villa, with Rovinj just 12 km away.</p><div class="loc-cols"><div class="loc-group"><h4>Town &amp; Nearby</h4><ul><li>Soardo-Bembo Castle<span>3 min walk</span></li><li>Rovinj<span>12 km</span></li><li>Beach Bale<span>6 km</span></li><li>Dvigrad Castle<span>16 km</span></li></ul></div><div class="loc-group"><h4>Travel</h4><ul><li>Pula Airport<span>~26 min</span></li><li>Konoba Cakula<span>450 m</span></li></ul></div></div></div><div class="location-img reveal-right"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2819.319799433606!2d13.784077876725968!3d45.038731871070176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x477cc84345fe0aa7%3A0xac21973d6b1c31a7!2sUl.%20Braida%2021A%2C%2052210%2C%20Bale%2C%20Croatia!5e0!3m2!1sen!2sus!4v1776181934825!5m2!1sen!2sus" width="100%" height="100%" style="border:0;min-height:520px;filter:grayscale(20%)" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div></div></section>
 <section class="policies"><div class="policies-inner"><div class="policies-header reveal"><p class="section-eyebrow">Good to Know</p><h2 class="section-title">House <em>Policies</em></h2><div class="divider"></div></div><div class="policies-grid"><div class="policy-card reveal" data-delay="1"><div class="policy-icon">🕓</div><h3>Check-in &amp; Check-out</h3><ul><li>Check-in from 17:00</li><li>Check-out by 09:30</li><li>Address: 21A Ulica Braida, 52210 Bale</li></ul></div>
       <div class="policy-card reveal" data-delay="2"><div class="policy-icon">🌡️</div><h3>Pool Heating</h3><ul><li>Optional extra</li><li>25 EUR/night or 100 EUR/week</li><li>Payable cash on arrival</li></ul></div>
       <div class="policy-card reveal" data-delay="3"><div class="policy-icon">🐾</div><h3>Pets &amp; Rules</h3><ul><li>1 small pet on inquiry</li><li>Pet fee: 20 EUR/night cash</li><li>No smoking inside the villa</li></ul></div></div></div></section>
@@ -344,6 +346,22 @@
     // { from: '2026-07-01', to: '2026-07-14' },
     // { from: '2026-08-10', to: '2026-08-20' },
   ];
+
+  // ── NIGHTLY PRICES ──────────────────────────────────────────────────────────
+  // Edit the price values below. Each season covers a date range.
+  // Dates not covered by any season will show no price.
+  const PRICE_SEASONS = [
+    { from: '2026-03-20', to: '2026-05-31', price: 350 },  // Spring shoulder
+    { from: '2026-06-01', to: '2026-06-27', price: 480 },  // Early summer
+    { from: '2026-06-28', to: '2026-08-22', price: 650 },  // Peak season
+    { from: '2026-08-23', to: '2026-09-13', price: 480 },  // Late summer
+    { from: '2026-09-14', to: '2026-10-31', price: 350 },  // Autumn shoulder
+  ];
+  function getPriceForDate(str) {
+    const s = PRICE_SEASONS.find(r => str >= r.from && str <= r.to);
+    return s ? s.price : null;
+  }
+  // ────────────────────────────────────────────────────────────────────────────
   function pad(n){return String(n).padStart(2,'0');}
   function ds(y,m,d){return y+'-'+pad(m+1)+'-'+pad(d);}
   function isBooked(str){return BOOKED.some(r=>str>=r.from&&str<=r.to);}
@@ -362,7 +380,7 @@
       if(str===s1)cls+=' sel-start';if(str===s2)cls+=' sel-end';
       if(inRng)cls+=' in-range';if(str===todayStr)cls+=' today';
       const click=(!past&&!booked)?'onclick="pick(\''+str+'\')"':'';
-      h+='<div class="'+cls+'" '+click+'>'+d+'</div>';
+      const price=getPriceForDate(str);const priceHtml=(!past&&!booked&&price)?'<span class="cal-price">'+price+'€</span>':'';h+='<div class="'+cls+'" '+click+'>'+d+priceHtml+'</div>';
     }
     return h+'</div></div>';
   }
